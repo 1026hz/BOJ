@@ -3,66 +3,60 @@ import java.util.*;
 
 public class Main {
 
-    static int N, M, ans;
-    static List<Integer>[] graph;
-    static boolean[][] visited;
+    static int N, M;
     static int[][] map;
+    static boolean[][] visited;
+    static int[] dx = {1, -1, 0, 0};
+    static int[] dy = {0, 0, 1, -1};
 
-    // 상(-1, 0) 하(1, 0) 좌(0, -1) 우(0, 1)
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
-    static class Node{
-        int x, y, cnt;
-        Node(int x, int y, int cnt){
-            this.x = x;
-            this.y = y;
-            this.cnt = cnt;
-        }
-    }
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
+        map = new int[N+1][M+1];
+        visited = new boolean[N+1][M+1];
 
-        map = new int[N+2][M+2];
-        for(int i=1; i<=N; i++){
+        for (int i = 0; i < N; i++) {
             String line = br.readLine();
-            for(int j=1; j<=M; j++){
-                map[i][j] = line.charAt(j-1) - '0';
+            for (int j = 0; j < M; j++) {
+                map[i][j] = line.charAt(j) - '0';
             }
         }
-
-        visited = new boolean[N+2][M+2];
-        bfs(1, 1);
-        System.out.println(ans);
+        System.out.println(bfs(0,0));
 
     }
 
-    static void bfs(int x, int y){
-        Queue<Node> q = new LinkedList<>();
-        q.add(new Node(x,y,1));
+    public static int bfs(int x, int y){
+
         visited[x][y] = true;
+        Deque<int []> dq = new ArrayDeque<>();
+        dq.addLast(new int[]{x,y});
 
-        while(!q.isEmpty()){
-            Node now = q.poll();
+        while(!dq.isEmpty()) {
+            int[] now = dq.pollFirst();
+            int nowX = now[0];
+            int nowY = now[1];
 
-            if(now.x == N && now.y == M){
-                ans = now.cnt;
+            if(nowX == N - 1 && nowY == M - 1){
+                return map[nowX][nowY];
             }
 
-            for(int i=0; i<4; i++){
-                int nowX = now.x + dx[i];
-                int nowY = now.y + dy[i];
-                if (!visited[nowX][nowY] && map[nowX][nowY] == 1){
-                    visited[nowX][nowY] = true;
-                    q.add(new Node(nowX, nowY, now.cnt + 1));
-                }
-            }
+            for (int i = 0; i < 4; i++) {
+                int nextX = nowX + dx[i];
+                int nextY = nowY + dy[i];
 
+                if (nextX < 0 || nextY < 0 || nextX >= N || nextY >= M) continue;
+                if (visited[nextX][nextY]) continue;
+                if (map[nextX][nextY] == 0) continue;
+
+                visited[nextX][nextY] = true;
+                map[nextX][nextY] = map[nowX][nowY] + 1;
+                dq.addLast(new int[]{nextX, nextY});
+            }
         }
+        return -1;
+
     }
 
 }
