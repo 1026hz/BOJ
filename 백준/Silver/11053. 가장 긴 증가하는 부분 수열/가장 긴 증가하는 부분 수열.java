@@ -2,28 +2,37 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
         int N = Integer.parseInt(br.readLine());
-        int[] arr = new int[N];
+        int[] A = new int[N];
+        int[] tails = new int[N];
+
         StringTokenizer st = new StringTokenizer(br.readLine());
-        for(int i=0; i<N; i++){
-            arr[i] = Integer.parseInt(st.nextToken());
+        for(int i=0; i<N; i++) A[i] = Integer.parseInt(st.nextToken());
+
+        int size = 0;
+        for(int num : A){
+            int position = lowerBound(tails, size, num);
+            tails[position] = num;
+            if(position == size) size++;
         }
 
-        List<Integer> lis = new ArrayList<>();
-
-        for(int n : arr){
-            int position = Collections.binarySearch(lis, n);
-            // Collections.binarySearch()
-            // 찾았을 때 -> 그 인덱스
-            // 못 찾았을 때 -> -(삽입할 위치 + 1)
-            if(position < 0) position = -(position + 1);
-            if(position == lis.size()) lis.add(n); // 제일 크면 add
-            else lis.set(position, n); // 인덱스가 position인 것 n으로 바꾸기
-        }
-
-        System.out.println(lis.size());
+        System.out.println(size);
     }
+
+    static int lowerBound(int[] arr, int size, int target){
+        int left = 0;
+        int right = size;
+
+        while(left < right){
+            int mid = (left + right) / 2;
+            if (arr[mid] >= target) right = mid;
+            else left = mid + 1;
+        }
+
+        return left;
+    }
+
+
 }
