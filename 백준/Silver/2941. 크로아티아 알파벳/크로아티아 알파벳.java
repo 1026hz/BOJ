@@ -1,21 +1,14 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String word = br.readLine();
+        String s = br.readLine();
+        String[] alphabet = {"dz=", "c=", "c-", "d-", "lj", "nj", "s=", "z="};
+        for(String alpha : alphabet){
+            s = s.replace(alpha, "1");
+        }
 
-        word = word.replace("dz=", "1");
-        word = word.replace("c=", "1");
-        word = word.replace("c-", "1");
-        word = word.replace("d-", "1");
-        word = word.replace("lj", "1");
-        word = word.replace("nj", "1");
-        word = word.replace("s=", "1");
-        word = word.replace("z=", "1");
-
-        System.out.println(word.length());
+        System.out.println(s.length());
     }
 }
