@@ -2,64 +2,60 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        StringBuilder sb = new StringBuilder();
         int T = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
 
-        for(int i=0; i<T; i++){
+        for (int t = 0; t < T; t++) {
             String p = br.readLine();
             int n = Integer.parseInt(br.readLine());
-            String numList = br.readLine();
-            if (n == 0 && p.length() == 0){
-                sb.append("error").append('\n');
+            String numbers = br.readLine();
+            numbers = numbers.substring(1, numbers.length() - 1);
+            String[] numList = (n == 0) ? new String[0] : numbers.split(",");
+
+            boolean reverse = false;
+            boolean error = false;
+
+            int start = 0;
+            int end = n - 1;
+
+            for (char c : p.toCharArray()) {
+                if (c == 'R') {
+                    reverse = !reverse;
+                } else {
+                    if (start > end) {
+                        error = true;
+                        break;
+                    }
+                    if (reverse) end--;
+                    else start++;
+                }
+            }
+
+            if (error) {
+                sb.append("error\n");
                 continue;
             }
-            numList = numList.substring(1, numList.length() - 1);
-            String[] tokens = numList.split(",");
 
-            Deque<Integer> dq = new ArrayDeque<>();
-            if(n > 0){
-                for(String token : tokens){
-                    dq.add(Integer.parseInt(token));
-                }
-            }
-
-            boolean errorFlag = false;
-            boolean reversedflag = false;
-
-            for(char c : p.toCharArray()){
-                n = dq.size();
-                if (c == 'R'){
-                    if(reversedflag) reversedflag = false;
-                    else reversedflag = true;
-                } else if (c == 'D'){
-                    if(n == 0) errorFlag = true;
-                    else if(reversedflag) dq.pollLast();
-                    else dq.pollFirst();
-                }
-            }
-
-            if (errorFlag) sb.append("error").append('\n');
-            else {
-                sb.append("[");
-                if(reversedflag) {
-                    for (int l=0; l<dq.size(); l++){
-                        sb.append(dq.peekLast()).append(",");
-                        dq.addFirst(dq.pollLast());
+            // 남은 구간 출력
+            sb.append('[');
+            if (start <= end) {
+                if (!reverse) {
+                    for (int i = start; i <= end; i++) {
+                        if (i > start) sb.append(',');
+                        sb.append(numList[i]);
                     }
                 } else {
-                    for (int num : dq) {
-                        sb.append(num).append(",");
+                    for (int i = end; i >= start; i--) {
+                        if (i < end) sb.append(',');
+                        sb.append(numList[i]);
                     }
                 }
-                if(sb.charAt(sb.length() -1) == ',') sb.deleteCharAt(sb.length() - 1);
-                sb.append("]");
-                sb.append('\n');
             }
+            sb.append("]\n");
         }
-        System.out.println(sb);
+
+        System.out.print(sb);
     }
 }
