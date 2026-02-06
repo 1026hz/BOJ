@@ -1,34 +1,28 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String word = br.readLine().toUpperCase();
-
-        int[] count = new int[26];
-
-        for(int i=0; i<word.length(); i++){
-            char now = word.charAt(i);
-            count[now - 'A']++;
-        }
-
+        String s = br.readLine();
+        s = s.toUpperCase();
+        int[] alphabet = new int[30];
         int max = 0;
-        char ans = '?';
+        for(int i=0; i<s.length(); i++){
+            alphabet[s.charAt(i)-'A']++;
+            if(max < alphabet[s.charAt(i)-'A']) max = alphabet[s.charAt(i)-'A'];
+        }
 
-        for(int i=0; i<26; i++){
-            if(count[i] > max){
-                max = count[i];
-                ans = (char)(i + 'A');
-            }
-            else if (count[i] == max){
-                ans = '?';
+        int count = 0;
+        char ans = 'a';
+        for(int i=0; i<30; i++){
+            if (alphabet[i] == max) {
+                ans = (char)('A' + i);
+                count++;
             }
         }
 
-        System.out.println(ans);
+        if(count == 1) System.out.println(ans);
+        else System.out.println('?');
 
     }
 }
